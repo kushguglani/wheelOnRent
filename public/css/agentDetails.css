@@ -1,0 +1,6 @@
+.dropdown-toggle{
+	border: 1px solid #ced4da;
+}
+#profilePhoto, #docs{
+	border:none;
+}

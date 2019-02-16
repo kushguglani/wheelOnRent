@@ -1,0 +1,61 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+	<meta charset="UTF-8">
+	<meta name="viewport" content="width=device-width, initial-scale=1.0">
+	<meta http-equiv="X-UA-Compatible" content="ie=edge">
+	<title>Document</title>
+	<!-- bootstrap cdn -->
+	<link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/bootstrap/4.2.1/css/bootstrap.min.css" integrity="sha384-GJzZqFGwb1QTTN6wy59ffF1BuGJpLSa9DkKMp0DgiMDm4iYMj70gZWKYbI706tWS"
+	 crossorigin="anonymous">
+	<link rel="stylesheet" href="../css/bootstrap-multiselect.css" type="text/css" />
+	<!-- Common css -->
+	<link rel="stylesheet" type="text/css" href="../css/index.css" />
+	<link rel="stylesheet" type="text/css" href="../css/agentDetails.css" />
+	<link rel="stylesheet" type="text/css" href="../css/toast.css" />
+</head>
+
+<body>
+	<div class="container margin-top-bottom-30">
+		<div class="card border-primary">
+			<div class="card-header">
+				<h2 class="text-center">Upload</h2>
+			</div>
+			<form class="margin-30" enctype="multipart/form-data">
+				<div class="form-row">
+					<div class="form-group col">
+						<div class="custom-file">
+							<label for="profilePhoto">Profile Photo</label><br />
+							<input name="profilePhoto" class="form-control" type="file" id="profilePhoto">
+						</div>
+					</div>
+				</div>
+				<button type="button" class="btn btn-primary" id="uploadDocuments">Upload Profile Photo</button>
+			</form> 
+			<form action="/uploadDocument" class="margin-30" enctype="multipart/form-data">
+				<div class="form-row">
+					<div class="form-group col">
+						<div class="custom-file">
+							<label for="docs">Upload Documents</label>
+							<input name="docs" class="form-control" type="file" id="docs" multiple>
+						</div>
+					</div>
+				</div>
+				<button type="submit" class="btn btn-primary" id="uploadDocuments">Upload Documents</button>
+			</form>
+		</div>
+		<div id="snackbar"></div>
+	</div>
+	<script src="https://code.jquery.com/jquery-3.3.1.slim.min.js" integrity="sha384-q8i/X+965DzO0rT7abK41JStQIAqVgRVzpbzo5smXKp4YfRvH+8abtTE1Pi6jizo"
+	 crossorigin="anonymous"></script>
+	<script src="https://cdnjs.cloudflare.com/ajax/libs/popper.js/1.14.6/umd/popper.min.js" integrity="sha384-wHAiFfRlMFy6i5SRaxvfOCifBUQy1xHdJ/yoi7FRNXMRBu5WHdZYu1hA6ZOblgut"
+	 crossorigin="anonymous"></script>
+	<script src="https://stackpath.bootstrapcdn.com/bootstrap/4.2.1/js/bootstrap.min.js" integrity="sha384-B0UglyR+jN6CkvvICOB2joaf5I4l3gm9GU6Hc1og6Ls7i6U/mkkaduKaBhlAXv9k"
+	 crossorigin="anonymous"></script>
+	<script src="https://cdnjs.cloudflare.com/ajax/libs/axios/0.18.0/axios.js"></script>
+	<script src="../js/ext/bootstrap-multiselect.js"></script>
+	<script type="module" src="../js/uploadAgentDocuments.js"></script>
+</body>
+
+</html>
