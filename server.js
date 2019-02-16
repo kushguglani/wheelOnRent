@@ -12,7 +12,16 @@ const { mongoose } = require('./db/mongooseConection');
 const session = require('express-session');
 const MongoStore = require('connect-mongo')(session);
 app.set('trust proxy', 1) // trust first proxy
-app.use(session({ secret: 'keyboard cat', store: new MongoStore(options)}))
+app.use(session({ 
+    cookie: {
+        secure: true,
+        maxAge: 60000
+    },
+    store: new RedisStore(),
+    secret: 'secret',
+    saveUninitialized: true,
+    resave: false
+}))
 
 const { AgentSchema } = require('./models/agentForm');
 const { VehicleSchema } = require('./models/vehicleDetails');
