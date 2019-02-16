@@ -7,11 +7,12 @@ const _ = require('lodash');
 const multer = require('multer');
 const formidable = require('formidable');
 const fs = require('fs');
+const MongoStore = require('connect-mongo')(session);
 
 const { mongoose } = require('./db/mongooseConection');
 const session = require('express-session');
 app.set('trust proxy', 1) // trust first proxy
-app.use(session({ secret: 'keyboard cat', cookie: { maxAge: 60000 } }))
+app.use(session({ secret: 'keyboard cat', store: new MongoStore(options), cookie: { maxAge: 60000 } }))
 
 const { AgentSchema } = require('./models/agentForm');
 const { VehicleSchema } = require('./models/vehicleDetails');
