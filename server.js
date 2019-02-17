@@ -17,8 +17,7 @@ app.use(session({
         secure: true,
         maxAge: 60000
     },
-    store: new RedisStore(),
-    secret: 'secret',
+    secret: process.env.JWT_SECRET,
     saveUninitialized: true,
     resave: false
 }))
@@ -77,14 +76,7 @@ app.post('/uploadProfile', (req, res) => {
         console.log(err)
     });
     form.on('end', (file) => {
-        // console.log(filePath);
-        // console.log("dd");
-        // console.log(req.session.agentId);
-        // console.log("agent")
         uploadStatus = 'File Uploaded Successfully';
-        let profilePhoto = { profilePic: req.session.agentId + '-' + Date.now() };
-        // console.log(profilePhoto);
-        // console.log(userId);
         let body = {
             docs_name: filePath
         }
@@ -109,7 +101,6 @@ app.post('/uploadProfile', (req, res) => {
 
 
 app.post('/saveAgentFormDetails', (req, res) => {
-    console.log(req.body);
     let agentDetails = new AgentSchema(req.body);
     agentDetails.save().then(() => {
         return agentDetails.genrateAuthToken();
@@ -118,8 +109,6 @@ app.post('/saveAgentFormDetails', (req, res) => {
             console.log(agentDetails);
             console.log(agentDetails._id);
             req.session.agentId = agentDetails._id;
-            console.log(req.session.agentId);
-            console.log("SD");
             res.header('x-auth', token).send(agentDetails);
         })
         .catch(err => {
