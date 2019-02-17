@@ -56,12 +56,12 @@ app.post('/uploadProfile', (req, res) => {
     form.on('file', function (field, file) {
         // console.log(Date.now() + '-' + file.name);
         console.log("----------------------");
-        console.log(file.path);
         console.log(file.uploadDir);
         filePath = form.uploadDir + '/' + Date.now() + '-' + file.name;
-        fs.rename(file.path, path.join(form.uploadDir, Date.now() + '-' + file.name), (err) => {
-            if (err) return console.log(err);
-        })
+        console.log(path.join(form.uploadDir, Date.now() + '-' + file.name));
+        // fs.rename(file.name, path.join(form.uploadDir, Date.now() + '-' + file.name), (err) => {
+        //     if (err) return console.log(err);
+        // })
         console.log("File Uploaded Successfully")
     })
     form.on('error', (err) => {
