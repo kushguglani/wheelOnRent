@@ -23,8 +23,8 @@ const port = process.env.PORT;
 
 
 app.use(express.static(path.join(__dirname, 'public')));
-app.use(bodyParser.json());
-app.use(bodyParser.urlencoded({ extended: true }))
+// app.use(bodyParser.json());
+// app.use(bodyParser.urlencoded({ extended: true }))
 
 
 //agent api start from here
@@ -54,7 +54,10 @@ app.post('/uploadProfile', (req, res) => {
         agent_id = fields._id;
     });
     form.on('file', function (field, file) {
-        console.log(Date.now()+'-'+file.name);
+        // console.log(Date.now() + '-' + file.name);
+        console.log("----------------------");
+        console.log(file.path);
+        console.log(file.uploadDir);
         filePath = form.uploadDir + '/' + Date.now() + '-' + file.name;
         fs.rename(file.path, path.join(form.uploadDir, Date.now() + '-' + file.name), (err) => {
             if (err) return console.log(err);
@@ -98,6 +101,8 @@ app.post('/uploadDocs', (req, res) => {
     form.on('file', function (fields, files) {
         filePath = form.uploadDir + '/' + Date.now()+'-'+files.name;
         filePaths.push(filePath);
+        console.log("******************");
+        console.log(files.path);
         fs.rename(files.path, path.join(form.uploadDir, Date.now()+'-'+files.name), (err) => {
             if (err) return console.log(err);
         })
