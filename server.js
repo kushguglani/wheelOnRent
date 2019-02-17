@@ -4,7 +4,6 @@ const bodyParser = require('body-parser');
 const app = express();
 const path = require('path');
 const _ = require('lodash');
-const multer = require('multer');
 const formidable = require('formidable');
 const fs = require('fs');
 
@@ -23,8 +22,9 @@ const port = process.env.PORT;
 
 
 app.use(express.static(path.join(__dirname, 'public')));
-// app.use(bodyParser.json());
-// app.use(bodyParser.urlencoded({ extended: true }))
+
+app.use(bodyParser.urlencoded({ extended: true }))
+app.use(bodyParser.json());
 
 
 //agent api start from here
