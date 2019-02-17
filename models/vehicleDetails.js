@@ -19,6 +19,13 @@ let VehicleDetails = new mongoose.Schema({
                 minlength: 1,
 
         },
+        status: {
+                type: Number,
+                required: true,
+                minlength: 1,
+                maxlength: 1,
+
+        },
 })
 
 let VehicleSchema = mongoose.model('vehicle_schema', VehicleDetails);

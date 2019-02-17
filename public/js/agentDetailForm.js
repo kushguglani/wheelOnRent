@@ -103,20 +103,24 @@ function eventListeners() {
 
 }
 
+export function fetchVehicles(){
+	return axios.get('/fetchVehicleType').then(res => {
+		// console.log(res);
+		return res;
+	})
+}
+
 window.onload = function (e) {
 	let vehicleType = document.querySelector('#vehicleType');
-	axios.get('/fetchVehicleType').then(res => {
-		console.log(res);
+	fetchVehicles().then(res=>{
 		var options = [];
 		for (let i = 0; i < res.data.length; i++) {
-			options.push({ label: res.data[i].vehicle_name, title: res.data[i].vehicle_name, value: res.data[i].vehicle_name  })
+			options.push({ label: res.data[i].vehicle_name, title: res.data[i].vehicle_name, value: res.data[i].vehicle_name })
 		}
 		console.log(options);
 		$('#vehicleType').multiselect();
 
 		$('#vehicleType').multiselect('dataprovider', options);
-
-		
 	})
 }
 function init() {

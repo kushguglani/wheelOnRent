@@ -1,0 +1,45 @@
+
+.table-fixed {
+  background-color: #fff;
+  width: 100%;
+}
+.table-fixed tbody {
+  height: 200px;
+  overflow-y: auto;
+}
+
+.userDetail tbody {
+  height: 80%;
+
+}
+.table-fixed thead,
+.table-fixed tbody,
+.table-fixed tr{
+	display: block;
+	width: 100%;
+    text-align: center;
+}
+
+.table-fixed td,
+.table-fixed th {
+	display: block;
+	width: 20%;
+}
+.userDetail td,
+.userDetail th {
+	display: block;
+	width: 12.5%;
+}
+.table-fixed tbody td {
+  float: left;
+    text-align: center;
+}
+.userDetail thead tr th {
+  height: 80px;
+}
+.table-fixed thead tr th {
+  float: left;
+    text-align: center;
+	background-color: #f7f7f7;
+	border-color: #ced4da;
+}

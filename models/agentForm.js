@@ -76,8 +76,11 @@ let AgentFormSchema = new mongoose.Schema({
                 required: true,
 
         },
-        profilePic:{
-                type: mongoose.Schema.Types.ObjectId, ref:'DocsSchema'
+        profilePic: {
+                type: mongoose.Schema.Types.ObjectId, ref: 'DocsSchema'
+        },
+        docs: {
+                type: mongoose.Schema.Types.ObjectId, ref: 'DocsSchema'
         },
         tokens: [{
                 access: {

@@ -20,14 +20,26 @@ html,body{
 	overflow-x: hidden;
 }
 
+.clearfix::after {
+  content: "";
+  clear: both;
+  display: table;
+}
 .margin-30{
 	margin:30px;
 }
 .margin-top-bottom-30{
-	margin: 10px auto;
+	margin: 30px auto;
+}
+.margin-bottom-20{
+	margin-bottom: 20px;
 }
 
 .comingImage{
 	height: 100vh;
     width: 100%;
+}
+.userContainer{
+	width:95%;
+	margin:30px auto;
 }
