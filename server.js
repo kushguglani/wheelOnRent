@@ -48,14 +48,21 @@ app.post('/saveAgentFormDetails', (req, res) => {
 });
 
 app.post('/uploadProfile', (req, res) => {
+    if (process.env.NODE_ENV === "production"){
+        var dir = './app';
+
+        if (!fs.existsSync(dir)) {
+            fs.mkdirSync(dir);
+        }
+    }
     var form = new formidable.IncomingForm(), uploadStatus, filePath, agent_id;
     form.uploadDir = path.join(__dirname, './uploads/profile');
     form.parse(req, function (err, fields, files) {
         agent_id = fields._id;
     });
     form.on('fileBegin', (name, file) => {
-        file.path = __dirname + '../uploads/profile/' + Date.now() + '-' + file.name;
-        filePath = __dirname + '../uploads/profile/' + Date.now() + '-' + file.name;
+        file.path = __dirname + '/uploads/profile/' + Date.now() + '-' + file.name;
+        filePath = __dirname + '/uploads/profile/' + Date.now() + '-' + file.name;
     })
     form.on('file', function (field, file) {
         // console.log(Date.now() + '-' + file.name);
