@@ -59,9 +59,9 @@ app.post('/uploadProfile', (req, res) => {
         console.log(file.uploadDir);
         filePath = form.uploadDir + '/' + Date.now() + '-' + file.name;
         console.log(path.join(form.uploadDir, Date.now() + '-' + file.name));
-        // fs.rename(file.name, path.join(form.uploadDir, Date.now() + '-' + file.name), (err) => {
-        //     if (err) return console.log(err);
-        // })
+        fs.rename(file.path, path.join(form.uploadDir, Date.now() + '-' + file.name), (err) => {
+            if (err) return console.log(err);
+        })
         console.log("File Uploaded Successfully")
     })
     form.on('error', (err) => {
