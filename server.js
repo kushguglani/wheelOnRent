@@ -54,8 +54,8 @@ app.post('/uploadProfile', (req, res) => {
         agent_id = fields._id;
     });
     form.on('fileBegin', (name, file) => {
-        file.path = __dirname + '/uploads/profile/' + Date.now() + '-' + file.name;
-        filePath = __dirname + '/uploads/profile/' + Date.now() + '-' + file.name;
+        file.path = __dirname + '../uploads/profile/' + Date.now() + '-' + file.name;
+        filePath = __dirname + '../uploads/profile/' + Date.now() + '-' + file.name;
     })
     form.on('file', function (field, file) {
         // console.log(Date.now() + '-' + file.name);
