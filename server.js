@@ -53,13 +53,12 @@ app.post('/uploadProfile', (req, res) => {
     form.parse(req, function (err, fields, files) {
         agent_id = fields._id;
     });
+    form.on('fileBegin', (name, file) => {
+        file.path = __dirname + '/uploads/profile/' + Date.now() + '-' + file.name;
+        filePath = __dirname + '/uploads/profile/' + Date.now() + '-' + file.name;
+    })
     form.on('file', function (field, file) {
         // console.log(Date.now() + '-' + file.name);
-        console.log("----------------------");
-        console.log(file.uploadDir);
-        filePath = form.uploadDir + '/' + Date.now() + '-' + file.name;
-        console.log(path.join(form.uploadDir, Date.now() + '-' + file.name));
-        file.path = path.join(form.uploadDir, Date.now() + '-' + file.name);
         fs.rename(file.path, path.join(form.uploadDir, Date.now() + '-' + file.name), (err) => {
             if (err) return console.log(err);
         })
@@ -91,20 +90,59 @@ app.post('/uploadProfile', (req, res) => {
     })
 
 })
+// app.post('/uploadProfile', (req, res) => {
+//     var uploadStatus, filePath, agent_id;
+//     // form.uploadDir = path.join(__dirname, './uploads/profile');
+//     new formidable.IncomingForm().parse(req, function (err, fields, files) {
+//         agent_id = fields._id;
 
+//         form.on('fileBegin', (name, file) => {
+//             file.path = __dirname + '/uploads/profile/' + Date.now() + '-' + file.name;
+//             filePath = __dirname + '/uploads/profile/' + Date.now() + '-' + file.name;
+//         })
+//             .on('file', (name, file) => {
+//                 console.log("File Uploaded Successfully")
+//             })
+//         form.on('error', (err) => {
+//             console.log(err)
+//         });
+//         form.on('end', (file) => {
+//             uploadStatus = 'File Uploaded Successfully';
+//             let body = {
+//                 docs_name: filePath
+//             }
+//             let docsSchema = new DocsSchema(body);
+//             docsSchema.save().then((response) => {
+//                 //need agent id here
+//                 AgentSchema.findByIdAndUpdate(agent_id, { $set: { profilePic: response._id } }, { upsert: true }).then(agent => {
+//                     console.log(agent);
+//                     res.send({ status: uploadStatus, filename: `Profile photo uploaded successfully` })
+//                 })
+//                     .catch(e => {
+//                         console.log(e);
+//                     })
+//             })
+//                 .catch(e => {
+//                     console.log(e);
+//                 })
+
+//         })
+//     })
+
+// })
 
 app.post('/uploadDocs', (req, res) => {
-    var form = new formidable.IncomingForm(), uploadStatus, filePaths=[], agent_id;
+    var form = new formidable.IncomingForm(), uploadStatus, filePaths = [], agent_id;
     form.uploadDir = path.join(__dirname, './uploads/docs');
-    form.parse(req, function (err, fields,files) {
+    form.parse(req, function (err, fields, files) {
         agent_id = fields._id;
     });
     form.on('file', function (fields, files) {
-        filePath = form.uploadDir + '/' + Date.now()+'-'+files.name;
+        filePath = form.uploadDir + '/' + Date.now() + '-' + files.name;
         filePaths.push(filePath);
         console.log("******************");
         console.log(files.path);
-        fs.rename(files.path, path.join(form.uploadDir, Date.now()+'-'+files.name), (err) => {
+        fs.rename(files.path, path.join(form.uploadDir, Date.now() + '-' + files.name), (err) => {
             if (err) return console.log(err);
         })
         console.log("File Uploaded Successfully")
@@ -140,7 +178,7 @@ app.post('/uploadDocs', (req, res) => {
 
 app.get('/fetchVehicleType', (req, res) => {
     VehicleSchema.find({ status: 1 }, null, { sort: { _id: -1 } }).then(vehicle => {
-        if (vehicle.length === 0) res.status(200).send({msz:"empty"});
+        if (vehicle.length === 0) res.status(200).send({ msz: "empty" });
         else res.status(200).send(vehicle);
     })
         .catch((e) => {
@@ -179,9 +217,9 @@ app.post('/submitVehicleDetails', (req, res) => {
         })
 })
 
-app.post('/deleteVehicle',(req,res)=>{
+app.post('/deleteVehicle', (req, res) => {
     console.log(req.body.id);
-    VehicleSchema.findByIdAndUpdate(req.body.id,{$set:{status:0}},{new:true}).then(result=>{
+    VehicleSchema.findByIdAndUpdate(req.body.id, { $set: { status: 0 } }, { new: true }).then(result => {
         console.log(result);
         res.send(`Vehicle ${res.vehicle_name} deleted successfully`);
     })
