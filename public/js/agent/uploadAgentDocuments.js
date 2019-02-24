@@ -1,4 +1,4 @@
-import { showToast } from './toast.js';
+import { showToast } from '../toast.js';
 
 document.querySelector('#uploadProfile').addEventListener('click', uploadProfile);
 document.querySelector('#uploadDocuments').addEventListener('click', uploadDocuments);
@@ -19,7 +19,7 @@ function uploadProfile() {
 		'content-type': `multipart/form-data; boundary=${uploadData._boundary}`,
 	}).then(res => {
 		console.log(res);
-		showToast(`${res.data.filename}`, "success");
+		showToast(`${res.data.message}`, "success");
 	})
 
 }
@@ -32,7 +32,6 @@ function uploadDocuments(){
 	for (let i = 0; i < docs.files.length; i++) {
 		uploadData.append('image', docs.files[i]);
 		console.log(docs.files[i]);
-
 	}
 	// console.log(uploadData);
 	axios({
@@ -42,7 +41,7 @@ function uploadDocuments(){
 		'content-type': `multipart/form-data; boundary=${uploadData._boundary}`,
 	}).then(res => {
 		console.log(res);
-		showToast(`${res.data.filename}`, "success");
+		showToast(`${res.data.message}`, "success");
 	})
 
 }

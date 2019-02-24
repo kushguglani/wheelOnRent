@@ -15,7 +15,6 @@ let VehicleDetails = new mongoose.Schema({
         },
         vehicle_number_of_seats: {
                 type: Number,
-                required: true,
                 minlength: 1,
 
         },
@@ -24,6 +23,7 @@ let VehicleDetails = new mongoose.Schema({
                 required: true,
                 minlength: 1,
                 maxlength: 1,
+                default: 1
 
         },
 })

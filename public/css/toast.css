@@ -13,9 +13,13 @@
   font-size: 17px;
   border-radius: 5px;
 }
-.error{
-  background-color: red;
+.error,
+.error:active,
+.error:focus{
+  background-color: red !important;
   visibility: visible !important;
+  border: red !important;
+  box-shadow: none !important;
 }
 .success{
   background-color: green;

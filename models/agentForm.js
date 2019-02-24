@@ -2,6 +2,7 @@ const mongoose = require('mongoose');
 const validator = require('validator');
 const jwt = require('jsonwebtoken');
 const _ = require('lodash');
+var uniqueValidator = require('mongoose-unique-validator');
 // const bcrypt = require('bcryptjs');
 
 let AgentFormSchema = new mongoose.Schema({
@@ -15,7 +16,12 @@ let AgentFormSchema = new mongoose.Schema({
         agent_mobile: {
                 type: Number,
                 minlength: 10,
-                unique:true
+                unique: true
+        },
+        agent_email: {
+                type: String,
+                minlength: 3,
+                unique: true
         },
         agent_address: {
                 type: String,
@@ -59,28 +65,28 @@ let AgentFormSchema = new mongoose.Schema({
         },
         agent_number_of_vehicle: {
                 type: String,
-                required: true,
-                minlength: 1,
 
         },
         agent_vehicle_type: {
                 type: Array,
-                required: true,
         },
-        agent_bookin_city: {
+        agent_service_city: {
                 type: Array,
                 required: true,
-        },
-        agent_drop_city: {
-                type: Array,
-                required: true,
-
         },
         profilePic: {
                 type: mongoose.Schema.Types.ObjectId, ref: 'DocsSchema'
         },
         docs: {
                 type: mongoose.Schema.Types.ObjectId, ref: 'DocsSchema'
+        },
+        status: {
+                type: Number,
+                required: true,
+                minlength: 1,
+                maxlength: 1,
+                default:1
+
         },
         tokens: [{
                 access: {
@@ -95,17 +101,35 @@ let AgentFormSchema = new mongoose.Schema({
 
 })
 
+AgentFormSchema.plugin(uniqueValidator);
+
 AgentFormSchema.methods.genrateAuthToken = function (){
-        let agent = this;
+        let Agent = this;
         let access = 'auth';
-        console.log(agent._id);
-        console.log(process.env.JWT_SECRET);
-        let token = jwt.sign({_id:agent._id.toHexString(),access},process.env.JWT_SECRET).toString();
+        let token = jwt.sign({_id:Agent._id.toHexString(),access},process.env.JWT_SECRET).toString();
         console.log(token);
-        agent.tokens.push({access,token});
-        return agent.save().then(()=>{
+        Agent.tokens.push({access,token});
+        return Agent.save().then(()=>{
                 return token;
         })
+}
+
+AgentFormSchema.statics.findByToken = function(token){
+        let Agent = this;let decoded;
+        console.log(token+"dssd")
+        try{
+                decoded = jwt.verify(token,process.env.JWT_SECRET);
+        }
+        catch(e){
+                console.log(e);
+                return Promise.reject();
+        }
+        console.log(decoded._id);
+       return Agent.find({
+                _id:decoded._id,
+                'tokens.token':token,
+                'token.access':'auth'
+        });
 }
 
 let AgentSchema = mongoose.model('agent_schema', AgentFormSchema);

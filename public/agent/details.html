@@ -7,10 +7,10 @@
 	<!-- bootstrap cdn -->
 	<link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/bootstrap/4.2.1/css/bootstrap.min.css" integrity="sha384-GJzZqFGwb1QTTN6wy59ffF1BuGJpLSa9DkKMp0DgiMDm4iYMj70gZWKYbI706tWS"
 	 crossorigin="anonymous">
-	<link rel="stylesheet" href="../css/bootstrap-multiselect.css" type="text/css" />
+	<link rel="stylesheet" href="../css/ext/bootstrap-multiselect.css" type="text/css" />
 	<!-- Common css -->
 	<link rel="stylesheet" type="text/css" href="../css/index.css" />
-	<link rel="stylesheet" type="text/css" href="../css/agentDetails.css" />
+	<link rel="stylesheet" type="text/css" href="../css/agent/agentDetails.css" />
 	<link rel="stylesheet" type="text/css" href="../css/toast.css" />
 
 </head>
@@ -25,12 +25,16 @@
 				<div class="form-row">
 					<div class="form-group col-md-6">
 						<label for="inputName">Name</label>
-						<input type="text" class="form-control" id="inputName">
+						<input type="text" class="form-control" id="inputName" placeholder="First name   Middle name   Last name">
 					</div>
 					<div class="form-group col-md-6">
 						<label for="inputContact">Mobile No.</label>
 						<input type="text" class="form-control" id="inputContact">
 					</div>
+				</div>
+				<div class="form-group">
+					<label for="inputEmail">Email</label>
+					<input type="text" class="form-control" id="inputEmail" placeholder="abc@xyz.com">
 				</div>
 				<div class="form-group">
 					<label for="inputAddress">Address</label>
@@ -65,7 +69,7 @@
 				<div class="form-row">
 					<div class="form-group col-md-5">
 						<label for="companyRegType">Registration Type</label>
-						<select id="companyRegType" class="form-control">
+						<select id="companyRegType" class="form-control" onchange="regTypeChange(this.value)">
 							<option selected>Choose...</option>
 							<option value="Taxi">Taxi</option>
 							<option value="Auto">Auto</option>
@@ -74,18 +78,19 @@
 							<option value="kush">.3.</option> -->
 						</select>
 					</div>
-					<div class="form-group col-md-4">
+					<div class="form-group col-md-4 busDefault">
 						<label for="numberOfVehicles">No. of Vehicle</label>
 						<select id="numberOfVehicles" class="form-control">
-							<option selected>Choose...</option>
+							<option value="" selected>Choose...</option>
 							<option value=1>1</option>
 							<option value=2>2</option>
 							<option value=3>3</option>
 							<option value=4>4</option>
 							<option value=5>5</option>
+							<option value=5+>5+</option>
 						</select>
 					</div>
-					<div class="form-group col-md-3">
+					<div class="form-group col-md-3 busDefault">
 						<label for="vehicleType">Vehicle Type </label><br />
 						<!-- <select id="inputState" class="form-control">
 							<option selected>Choose...</option>
@@ -96,8 +101,8 @@
 					</div>
 				</div>
 				<div class="form-row">
-					<div class="form-group col">
-						<label for="bookingCities">Booking City</label> <br />
+					<div class="form-group col-6">
+						<label for="bookingCities">Service City</label> <br />
 						<select id="bookingCities" multiple="multiple" class="form-control multiSelectDrop">
 							<!-- <option selected>Choose...</option> -->
 							<option value="Bhubaneswar">Bhubaneswar</option>
@@ -108,10 +113,10 @@
 
 						</select>
 					</div>
-					<div class="form-group col">
+					<!-- <div class="form-group col-6 busDefault">
 						<label for="dropCities">Drop City</label><br />
 						<select id="dropCities" multiple="multiple" class="form-control multiSelectDrop">
-							<!-- <option selected>Choose...</option> -->
+							<option selected>Choose...</option>
 							<option value="Bhubaneswar">Bhubaneswar</option>
 							<option value="Cuttack">Cuttack</option>
 							<option value="Rourkela">Rourkela</option>
@@ -119,7 +124,7 @@
 							<option value="Puri">Puri</option>
 
 						</select>
-					</div>
+					</div> -->
 				</div>
 				<!-- <div class="form-row">
 					<div class="form-group col">
@@ -144,6 +149,7 @@
 					</div>
 				</div>
 				<button type="button" class="btn btn-primary" id="submitDetailsForm" disabled>Submit Details</button>
+				<button type="reset" class="btn btn-primary error">Cancel Details</button>
 			</form>
 			<div id="snackbar"></div>
 		</div>
@@ -157,7 +163,7 @@
 	 crossorigin="anonymous"></script>
 	<script src="https://cdnjs.cloudflare.com/ajax/libs/axios/0.18.0/axios.js"></script>
 	<script src="../js/ext/bootstrap-multiselect.js"></script>
-	<script type="module" src="../js/agentDetailForm.js"></script>
+	<script type="module" src="../js/agent/agentDetailForm.js"></script>
 </body>
 
 </html>

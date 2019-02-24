@@ -5,14 +5,14 @@
 	<meta charset="UTF-8" />
 	<meta name="viewport" content="width = device-width, initial-scale=1.0" />
 	<!-- bootstrap cdn -->
-	<link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/bootstrap/4.2.1/css/bootstrap.min.css" integrity="sha384-GJzZqFGwb1QTTN6wy59ffF1BuGJpLSa9DkKMp0DgiMDm4iYMj70gZWKYbI706tWS"
-	 crossorigin="anonymous">
-	 <link rel="stylesheet" href="https://use.fontawesome.com/releases/v5.7.2/css/all.css" integrity="sha384-fnmOCqbTlWIlj8LyTjo7mOUStjsKC4pOpQbqyi7RrhN7udi9RwhKkMHpvLbHG9Sr"
-	 crossorigin="anonymous">
-	<link rel="stylesheet" href="../css/bootstrap-multiselect.css" type="text/css" />
+	<link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/bootstrap/4.2.1/css/bootstrap.min.css"
+		integrity="sha384-GJzZqFGwb1QTTN6wy59ffF1BuGJpLSa9DkKMp0DgiMDm4iYMj70gZWKYbI706tWS" crossorigin="anonymous">
+	<link rel="stylesheet" href="https://use.fontawesome.com/releases/v5.7.2/css/all.css"
+		integrity="sha384-fnmOCqbTlWIlj8LyTjo7mOUStjsKC4pOpQbqyi7RrhN7udi9RwhKkMHpvLbHG9Sr" crossorigin="anonymous">
+	<link rel="stylesheet" href="../css/ext/bootstrap-multiselect.css" type="text/css" />
 	<!-- Common css -->
 	<link rel="stylesheet" type="text/css" href="../css/index.css" />
-	<link rel="stylesheet" type="text/css" href="../css/agentDetails.css" />
+	<link rel="stylesheet" type="text/css" href="../css/agent/agentDetails.css" />
 	<link rel="stylesheet" type="text/css" href="../css/toast.css" />
 	<link rel="stylesheet" type="text/css" href="../css/table.css" />
 
@@ -27,20 +27,37 @@
 			<form class="margin-30">
 				<div class="form-row">
 					<div class="form-group col">
-						<label for="inputName">Vehicle Name</label>
-						<input type="text" class="form-control" id="inputVehicleName">
+						<label for="inputName" onclick="bhaiPlzChalJa()">Vehicle Type</label>
+						<select id="companyRegType" class="form-control" onchange="selectVehicleType(this.value);">
+							<option value="" selected>Choose...</option>
+							<option value="Taxi">Taxi</option>
+							<option value="Bus">Bus</option>
+							<!-- <option value="kush">.1.</option>
+								<option value="kush">.3.</option> -->
+						</select>
 					</div>
 				</div>
-				<div class="form-row">
-					<div class="form-group col">
-						<label for="inputName">Vehicle Type</label>
-						<input type="text" class="form-control" id="inputVehicleType">
+				<div class="taxi">
+					<div class="form-row">
+						<div class="form-group col">
+							<label for="inputName">Taxi Name</label>
+							<input type="text" class="form-control" id="inputVehicleName">
+						</div>
+					</div>
+
+					<div class="form-row">
+						<div class="form-group col">
+							<label for="inputName">Number of seats</label>
+							<input type="number" class="form-control" id="inputVehicleSeats">
+						</div>
 					</div>
 				</div>
-				<div class="form-row">
-					<div class="form-group col">
-						<label for="inputName">Number of seats</label>
-						<input type="number" class="form-control" id="inputVehicleSeats">
+				<div class="bus">
+					<div class="form-row">
+						<div class="form-group col">
+							<label for="inputName">Bus Type</label>
+							<input type="text" class="form-control" id="inputBusType">
+						</div>
 					</div>
 				</div>
 				<button type="button" class="btn btn-primary" id="submitVehicleDetailsForm">Submit</button>
@@ -51,33 +68,36 @@
 	<div class="container">
 		<h2 class="text-center">Vehicle List</h2>
 		<div class="table-responsive">
-		<table class="table table-fixed">
-			<thead >
-				<tr class="clearfix">
-					<th class="">#</th>
-					<th class="">Name</th>
-					<th class="">Type</th>
-					<th class="">Seats</th>
-					<th class="">Delete</th>
-				</tr>
-			</thead>
-			<tbody class="vehicleDetails clearfix">
-				
-			</tbody>
-		</table>
+			<table class="table table-fixed">
+				<thead>
+					<tr class="clearfix">
+						<th class="">#</th>
+						<th class="">Type</th>
+						<th class="">Name</th>
+						<th class="">Seats</th>
+						<th class="">Delete</th>
+					</tr>
+				</thead>
+				<tbody class="vehicleDetails clearfix">
+
+				</tbody>
+			</table>
 		</div>
 	</div>
 
-	<script src="https://code.jquery.com/jquery-3.3.1.slim.min.js" integrity="sha384-q8i/X+965DzO0rT7abK41JStQIAqVgRVzpbzo5smXKp4YfRvH+8abtTE1Pi6jizo"
-	 crossorigin="anonymous"></script>
-	<script src="https://cdnjs.cloudflare.com/ajax/libs/popper.js/1.14.6/umd/popper.min.js" integrity="sha384-wHAiFfRlMFy6i5SRaxvfOCifBUQy1xHdJ/yoi7FRNXMRBu5WHdZYu1hA6ZOblgut"
-	 crossorigin="anonymous"></script>
-	<script src="https://stackpath.bootstrapcdn.com/bootstrap/4.2.1/js/bootstrap.min.js" integrity="sha384-B0UglyR+jN6CkvvICOB2joaf5I4l3gm9GU6Hc1og6Ls7i6U/mkkaduKaBhlAXv9k"
-	 crossorigin="anonymous"></script>
+	<script src="https://code.jquery.com/jquery-3.3.1.slim.min.js"
+		integrity="sha384-q8i/X+965DzO0rT7abK41JStQIAqVgRVzpbzo5smXKp4YfRvH+8abtTE1Pi6jizo"
+		crossorigin="anonymous"></script>
+	<script src="https://cdnjs.cloudflare.com/ajax/libs/popper.js/1.14.6/umd/popper.min.js"
+		integrity="sha384-wHAiFfRlMFy6i5SRaxvfOCifBUQy1xHdJ/yoi7FRNXMRBu5WHdZYu1hA6ZOblgut"
+		crossorigin="anonymous"></script>
+	<script src="https://stackpath.bootstrapcdn.com/bootstrap/4.2.1/js/bootstrap.min.js"
+		integrity="sha384-B0UglyR+jN6CkvvICOB2joaf5I4l3gm9GU6Hc1og6Ls7i6U/mkkaduKaBhlAXv9k"
+		crossorigin="anonymous"></script>
 	<script src="https://cdnjs.cloudflare.com/ajax/libs/axios/0.18.0/axios.js"></script>
-	
+
 	<script src="../js/ext/bootstrap-multiselect.js"></script>
-	<script type="module" src="../js/adminVehicleForm.js"></script>
+	<script type="module" src="../js/admin/adminVehicleForm.js"></script>
 </body>
 
 </html>

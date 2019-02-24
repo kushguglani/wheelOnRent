@@ -15,11 +15,14 @@ app.set('trust proxy', 1) // trust first proxy
 const { AgentSchema } = require('./models/agentForm');
 const { VehicleSchema } = require('./models/vehicleDetails');
 const { DocsSchema } = require('./models/docs');
-
+const s3 = require('./config/s3.config.js');
 const { authenticateAgent } = require('./middleware/authenticateAgent')
 
 const port = process.env.PORT;
 
+let upload = require('./config/multer.config.js');
+
+const awsWorker = require('./middleware/aws.controller.js');
 
 app.use(express.static(path.join(__dirname, 'public')));
 
@@ -40,51 +43,39 @@ app.post('/saveAgentFormDetails', (req, res) => {
             res.header('x-auth', token).send(agentDetails);
         })
         .catch(err => {
-            console.log(err);
-            if (err.name === 'MongoError' && err.code === 11000)
-                res.send({ error: true, message: `Mobile No. ${req.body.agent_mobile} already exist` })
-            res.status(400).send(err);
+            if (err.errors.agent_mobile)
+                res.send({ error: true, message: err.errors.agent_mobile.message })
+            else if (err.errors.agent_email)
+                res.send({ error: true, message: err.errors.agent_email.message })
+            else res.status(400).send(err);
         })
 });
 
-app.post('/uploadProfile', (req, res) => {
-    if (process.env.NODE_ENV === "production"){
-        var dir = './app';
-
-        if (!fs.existsSync(dir)) {
-            fs.mkdirSync(dir);
+// app.post('/uploadProfile', upload.single("image"), awsWorker.doUpload);
+app.post('/uploadProfile', upload.single("image"), (req, res) => {
+    const s3Client = s3.s3Client;
+    const params = s3.uploadParams;
+    // console.log(req.body._id);
+    params.Key = Date.now() + "-" + req.file.originalname;
+    params.Bucket = 'otravel/profile',
+    params.Body = req.file.buffer;
+   
+    s3Client.upload(params, (err, data) => {
+        if (err) {
+            res.status(500).json({ error: "Error -> " + err });
         }
-    }
-    var form = new formidable.IncomingForm(), uploadStatus, filePath, agent_id;
-    form.uploadDir = path.join(__dirname, './uploads/profile');
-    form.parse(req, function (err, fields, files) {
-        agent_id = fields._id;
-    });
-    form.on('fileBegin', (name, file) => {
-        file.path = __dirname + '/uploads/profile/' + Date.now() + '-' + file.name;
-        filePath = __dirname + '/uploads/profile/' + Date.now() + '-' + file.name;
-    })
-    form.on('file', function (field, file) {
-        // console.log(Date.now() + '-' + file.name);
-        fs.rename(file.path, path.join(form.uploadDir, Date.now() + '-' + file.name), (err) => {
-            if (err) return console.log(err);
-        })
-        console.log("File Uploaded Successfully")
-    })
-    form.on('error', (err) => {
-        console.log(err)
-    });
-    form.on('end', (file) => {
-        uploadStatus = 'File Uploaded Successfully';
+        //save file name in mongo
         let body = {
-            docs_name: filePath
+            docs_name: (Date.now() + "-" + req.file.originalname).toString()
         }
         let docsSchema = new DocsSchema(body);
         docsSchema.save().then((response) => {
             //need agent id here
-            AgentSchema.findByIdAndUpdate(agent_id, { $set: { profilePic: response._id } }, { upsert: true }).then(agent => {
+            AgentSchema.findByIdAndUpdate(req.body._id, { $set: { profilePic: response._id } }, { upsert: true }).then(agent => {
                 console.log(agent);
-                res.send({ status: uploadStatus, filename: `Profile photo uploaded successfully` })
+                // res.send({ status: uploadStatus, filename: `Profile photo uploaded successfully` })
+
+                res.send({ message: 'File uploaded successfully! -> keyname = ' + req.file.originalname });
             })
                 .catch(e => {
                     console.log(e);
@@ -93,52 +84,59 @@ app.post('/uploadProfile', (req, res) => {
             .catch(e => {
                 console.log(e);
             })
-
     })
+});
+app.post('/uploadDocs', upload.array("image"), (req, res) => {
+    const s3Client = s3.s3Client;
+    const params = s3.uploadParams;
+    let ResponseData = [];
+    req.files.map((item) => {
+        var params = {
+            Key: Date.now() + "-" + item.originalname,
+            Body: item.buffer,
+            Bucket: 'otravel/docs',
+        };
+        s3Client.upload(params, (err, data) => {
+            // console.log(err);
+            // console.error(data);
 
-})
-// app.post('/uploadProfile', (req, res) => {
-//     var uploadStatus, filePath, agent_id;
-//     // form.uploadDir = path.join(__dirname, './uploads/profile');
-//     new formidable.IncomingForm().parse(req, function (err, fields, files) {
-//         agent_id = fields._id;
+            if (err) {
+                res.status(500).json({ error: "Error -> " + err });
+            }
+            else {
+                ResponseData.push(data);
+                //save file name in mongo
+                let body = {
+                    docs_name: (Date.now() + "-" + item.originalname).toString()
+                }
+                let docsSchema = new DocsSchema(body);
+                docsSchema.save().then((response) => {
+                    //need agent id here
+                    AgentSchema.findByIdAndUpdate(req.body._id, { $set: { profilePic: response._id } }, { upsert: true }).then(agent => {
+                        // console.log(agent);
+                        // res.send({ status: uploadStatus, filename: `Profile photo uploaded successfully` })
+                        console.log(ResponseData.length);
+                        console.error(req.files.length);
+                        
+                        if (ResponseData.length === req.files.length) {
+                            res.send({  message: req.files.length + ' Docs uploaded successfully!' });
+                        }
+                    })
+                        .catch(e => {
+                            console.log(e);
+                        })
+                })
+                    .catch(e => {
+                        console.log(e);
+                    })
+            }
+        })
+    });
+});
 
-//         form.on('fileBegin', (name, file) => {
-//             file.path = __dirname + '/uploads/profile/' + Date.now() + '-' + file.name;
-//             filePath = __dirname + '/uploads/profile/' + Date.now() + '-' + file.name;
-//         })
-//             .on('file', (name, file) => {
-//                 console.log("File Uploaded Successfully")
-//             })
-//         form.on('error', (err) => {
-//             console.log(err)
-//         });
-//         form.on('end', (file) => {
-//             uploadStatus = 'File Uploaded Successfully';
-//             let body = {
-//                 docs_name: filePath
-//             }
-//             let docsSchema = new DocsSchema(body);
-//             docsSchema.save().then((response) => {
-//                 //need agent id here
-//                 AgentSchema.findByIdAndUpdate(agent_id, { $set: { profilePic: response._id } }, { upsert: true }).then(agent => {
-//                     console.log(agent);
-//                     res.send({ status: uploadStatus, filename: `Profile photo uploaded successfully` })
-//                 })
-//                     .catch(e => {
-//                         console.log(e);
-//                     })
-//             })
-//                 .catch(e => {
-//                     console.log(e);
-//                 })
 
-//         })
-//     })
 
-// })
-
-app.post('/uploadDocs', (req, res) => {
+app.post('/uploadDocs1', (req, res) => {
     var form = new formidable.IncomingForm(), uploadStatus, filePaths = [], agent_id;
     form.uploadDir = path.join(__dirname, './uploads/docs');
     form.parse(req, function (err, fields, files) {

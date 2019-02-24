@@ -4,3 +4,12 @@
 #profilePhoto, #docs{
 	border:none;
 }
+.taxi{
+	display: none;
+}
+.bus{
+	display: none;
+}
+.busDefault{
+	display: none
+}
