@@ -51,6 +51,7 @@ app.post('/saveAgentFormDetails', (req, res) => {
         })
 });
 
+//old
 // app.post('/uploadProfile', upload.single("image"), awsWorker.doUpload);
 app.post('/uploadProfile', upload.single("image"), (req, res) => {
     const s3Client = s3.s3Client;
@@ -183,6 +184,7 @@ app.post('/uploadDocs1', (req, res) => {
 
 app.get('/fetchVehicleType', (req, res) => {
     VehicleSchema.find({ status: 1 }, null, { sort: { _id: -1 } }).then(vehicle => {
+        console.log(vehicle);
         if (vehicle.length === 0) res.status(200).send({ msz: "empty" });
         else res.status(200).send(vehicle);
     })
