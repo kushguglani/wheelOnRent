@@ -4,6 +4,7 @@ document.querySelector('#uploadProfile').addEventListener('click', uploadProfile
 document.querySelector('#uploadDocuments').addEventListener('click', uploadDocuments);
 
 function uploadProfile() {
+	document.querySelector('#spinner').style.display = 'initial';
 	let profilePhoto = document.querySelector('#profilePhoto').files[0];
 	console.log(profilePhoto);
 	console.log(docs);
@@ -19,12 +20,14 @@ function uploadProfile() {
 		'content-type': `multipart/form-data; boundary=${uploadData._boundary}`,
 	}).then(res => {
 		console.log(res);
+		document.querySelector('#spinner').style.display = 'none';
 		showToast(`${res.data.message}`, "success");
 	})
 
 }
 
-function uploadDocuments(){
+function uploadDocuments() {
+	document.querySelector('#spinner').style.display = 'initial';
 	let docs = document.querySelector('#docs');
 	let agentID = localStorage.getItem('agent_id');
 	let uploadData = new FormData();
@@ -41,6 +44,7 @@ function uploadDocuments(){
 		'content-type': `multipart/form-data; boundary=${uploadData._boundary}`,
 	}).then(res => {
 		console.log(res);
+		document.querySelector('#spinner').style.display = 'none';
 		showToast(`${res.data.message}`, "success");
 	})
 

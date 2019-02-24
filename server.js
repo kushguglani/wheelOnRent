@@ -59,8 +59,8 @@ app.post('/uploadProfile', upload.single("image"), (req, res) => {
     // console.log(req.body._id);
     params.Key = Date.now() + "-" + req.file.originalname;
     params.Bucket = 'otravel/profile',
-    params.Body = req.file.buffer;
-   
+        params.Body = req.file.buffer;
+
     s3Client.upload(params, (err, data) => {
         if (err) {
             res.status(500).json({ error: "Error -> " + err });
@@ -107,29 +107,28 @@ app.post('/uploadDocs', upload.array("image"), (req, res) => {
             else {
                 ResponseData.push(data);
                 //save file name in mongo
-                let body = {
-                    docs_name: (Date.now() + "-" + item.originalname).toString()
-                }
-                let docsSchema = new DocsSchema(body);
-                docsSchema.save().then((response) => {
-                    //need agent id here
-                    AgentSchema.findByIdAndUpdate(req.body._id, { $set: { profilePic: response._id } }, { upsert: true }).then(agent => {
-                        // console.log(agent);
-                        // res.send({ status: uploadStatus, filename: `Profile photo uploaded successfully` })
-                        console.log(ResponseData.length);
-                        console.error(req.files.length);
-                        
-                        if (ResponseData.length === req.files.length) {
-                            res.send({  message: req.files.length + ' Docs uploaded successfully!' });
-                        }
+                if (ResponseData.length === req.files.length) {
+                    let body = {
+                        docs_name: req.files.map(curr=>(Date.now() + "-" + curr.originalname).toString())
+                    }
+                    console.log(body);
+                    let docsSchema = new DocsSchema(body);
+                    docsSchema.save().then((response) => {
+                        //need agent id here
+                        AgentSchema.findByIdAndUpdate(req.body._id, { $set: { docs: response._id } }, { upsert: true }).then(agent => {
+                            // console.log(agent);
+                            // res.send({ status: uploadStatus, filename: `Profile photo uploaded successfully` })
+                                res.send({ message: req.files.length + ' Docs uploaded successfully!' });
+                            
+                        })
+                            .catch(e => {
+                                console.log(e);
+                            })
                     })
                         .catch(e => {
                             console.log(e);
                         })
-                })
-                    .catch(e => {
-                        console.log(e);
-                    })
+                }
             }
         })
     });
@@ -140,10 +139,10 @@ app.post('/uploadDocs', upload.array("image"), (req, res) => {
 app.post('/uploadDocs1', (req, res) => {
     var form = new formidable.IncomingForm(), uploadStatus, filePaths = [], agent_id;
     form.uploadDir = path.join(__dirname, './uploads/docs');
-    form.parse(req, function (err, fields, files) {
+    form.parse(req, function(err, fields, files) {
         agent_id = fields._id;
     });
-    form.on('file', function (fields, files) {
+    form.on('file', function(fields, files) {
         filePath = form.uploadDir + '/' + Date.now() + '-' + files.name;
         filePaths.push(filePath);
         console.log("******************");
