@@ -76,7 +76,7 @@ app.post('/uploadProfile', upload.single("image"), (req, res) => {
                 console.log(agent);
                 // res.send({ status: uploadStatus, filename: `Profile photo uploaded successfully` })
 
-                res.send({ message: 'File uploaded successfully! -> keyname = ' + req.file.originalname });
+                res.send({ message: 'File uploaded successfully' });
             })
                 .catch(e => {
                     console.log(e);
