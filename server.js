@@ -51,23 +51,51 @@ app.post('/saveAgentFormDetails', (req, res) => {
         })
 });
 
+s3.s3Client.listBuckets(function (err, data) {
+    if (err) {
+        console.log("Error", err);
+    } else {
+        // console.log("Success", data.Buckets);
+    }
+});
+// var bucketParams = {
+//     Bucket: 'ezytrip',
+//     Prefix: 'docs'
+// };
+// s3.s3Client.listObjects(bucketParams, function (err, data) {
+//     if (err) {
+//         console.log("Error", err);
+//     } else {
+//         var href = this.request.httpRequest.endpoint.href;
+//         var bucketUrl = href + 'ezytrip' + '/';
+//         // console.log(bucketUrl+encodeURIComponent(data.Contents[1].Key))
+//         // // console.log("Success", data.Contents);
+//         var photos = data.Contents.map(function (photo) {
+//             var photoKey = photo.Key;
+//             var photoUrl = bucketUrl + encodeURIComponent(photoKey);
+//             console.log(photoUrl)
+//         })
+//     }
+// });
 //old
 // app.post('/uploadProfile', upload.single("image"), awsWorker.doUpload);
 app.post('/uploadProfile', upload.single("image"), (req, res) => {
     const s3Client = s3.s3Client;
     const params = s3.uploadParams;
+    let date = Date.now();
     // console.log(req.body._id);
-    params.Key = Date.now() + "-" + req.file.originalname;
-    params.Bucket = 'otravel/profile',
+    params.Key = date + "-" + req.file.originalname;
+    params.Bucket = 'ezytrip-proj/profile',
         params.Body = req.file.buffer;
 
     s3Client.upload(params, (err, data) => {
         if (err) {
-            res.status(500).json({ error: "Error -> " + err });
+            console.log(err);
+            return res.status(500).json({ error: "Error -> " + err });
         }
         //save file name in mongo
         let body = {
-            docs_name: (Date.now() + "-" + req.file.originalname).toString()
+            docs_name: (date + "-" + req.file.originalname).toString()
         }
         let docsSchema = new DocsSchema(body);
         docsSchema.save().then((response) => {
@@ -90,12 +118,13 @@ app.post('/uploadProfile', upload.single("image"), (req, res) => {
 app.post('/uploadDocs', upload.array("image"), (req, res) => {
     const s3Client = s3.s3Client;
     const params = s3.uploadParams;
+    let date = Date.now();
     let ResponseData = [];
     req.files.map((item) => {
         var params = {
-            Key: Date.now() + "-" + item.originalname,
+            Key: date + "-" + item.originalname,
             Body: item.buffer,
-            Bucket: 'otravel/docs',
+            Bucket: 'ezytrip-proj/docs',
         };
         s3Client.upload(params, (err, data) => {
             // console.log(err);
@@ -109,7 +138,7 @@ app.post('/uploadDocs', upload.array("image"), (req, res) => {
                 //save file name in mongo
                 if (ResponseData.length === req.files.length) {
                     let body = {
-                        docs_name: req.files.map(curr=>(Date.now() + "-" + curr.originalname).toString())
+                        docs_name: req.files.map(curr => (date + "-" + curr.originalname).toString())
                     }
                     console.log(body);
                     let docsSchema = new DocsSchema(body);
@@ -118,8 +147,8 @@ app.post('/uploadDocs', upload.array("image"), (req, res) => {
                         AgentSchema.findByIdAndUpdate(req.body._id, { $set: { docs: response._id } }, { upsert: true }).then(agent => {
                             // console.log(agent);
                             // res.send({ status: uploadStatus, filename: `Profile photo uploaded successfully` })
-                                res.send({ message: req.files.length + ' Docs uploaded successfully!' });
-                            
+                            res.send({ message: req.files.length + ' Docs uploaded successfully!' });
+
                         })
                             .catch(e => {
                                 console.log(e);
@@ -134,15 +163,23 @@ app.post('/uploadDocs', upload.array("image"), (req, res) => {
     });
 });
 
-
+app.post('/submitFeedback', (req, res) => {
+    console.log(req.body);
+    AgentSchema.updateOne({ _id: req.body.agentID }, { $push: { agent_feedback: req.body.agentFeedback } }, { upsert: true }).then(agent => {
+        res.send({ status: 'Feedback submitted successfully' })
+    })
+        .catch(e => {
+            console.log(e);
+        })
+})
 
 app.post('/uploadDocs1', (req, res) => {
     var form = new formidable.IncomingForm(), uploadStatus, filePaths = [], agent_id;
     form.uploadDir = path.join(__dirname, './uploads/docs');
-    form.parse(req, function(err, fields, files) {
+    form.parse(req, function (err, fields, files) {
         agent_id = fields._id;
     });
-    form.on('file', function(fields, files) {
+    form.on('file', function (fields, files) {
         filePath = form.uploadDir + '/' + Date.now() + '-' + files.name;
         filePaths.push(filePath);
         console.log("******************");
@@ -196,10 +233,13 @@ app.get('/fetchVehicleType', (req, res) => {
 
 app.get('/fetchAllAgents', (req, res) => {
     console.log("hello");
-    AgentSchema.find({}).then(user => {
-        if (user.length === 0) res.status(200).send("No agent found");
-        else res.status(200).send(user);
-    })
+    AgentSchema.find({})
+        .populate("profilePic")
+        .populate("docs")
+        .then(user => {
+            if (user.length === 0) res.status(200).send("No agent found");
+            else res.status(200).send(user);
+        })
         .catch((e) => {
             console.log(e);
             res.status(401).send(e);
@@ -230,6 +270,8 @@ app.post('/deleteVehicle', (req, res) => {
         res.send(`Vehicle ${res.vehicle_name} deleted successfully`);
     })
 })
+
+
 
 app.listen(port, () => {
     console.log(`Server is up on ${port}`);

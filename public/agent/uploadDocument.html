@@ -22,31 +22,39 @@
 			<div class="card-header">
 				<h2 class="text-center">Upload</h2>
 			</div>
-			<form class="margin-30" enctype="multipart/form-data">
-				<div class="form-row">
-					<div class="form-group col">
-						<div class="custom-file">
-							<label for="profilePhoto">Profile Photo</label><br />
-							<input name="profilePhoto" class="form-control" type="file" id="profilePhoto">
-						</div>
+			<div class="container">
+				<div class="row">
+					<div class="col">
+						<form class="margin-30" enctype="multipart/form-data">
+							<div class="custom-file">
+								<label for="profilePhoto">Profile Photo</label><br />
+								<input name="profilePhoto" class="form-control" type="file" id="profilePhoto">
+							</div><br/>
+							<button type="button" class="btn btn-primary margin-top-bottom-20" id="uploadProfile">Upload Profile Photo</button>
+						</form>
+					</div>
+					<div class="col">
+						<form class="margin-30" enctype="multipart/form-data">
+							<div class="custom-file">
+								<label for="docs">Upload Documents</label>
+								<input name="docs" class="form-control" type="file" id="docs" multiple>
+							</div>
+							<button type="button" class="btn btn-primary margin-top-bottom-20" id="uploadDocuments">Upload Documents</button>
+						</form>
 					</div>
 				</div>
-				<button type="button" class="btn btn-primary" id="uploadProfile">Upload Profile Photo</button>
-			</form> 
-			<form class="margin-30" enctype="multipart/form-data">
-				<div class="form-row">
-					<div class="form-group col">
-						<div class="custom-file">
-							<label for="docs">Upload Documents</label>
-							<input name="docs" class="form-control" type="file" id="docs" multiple>
-						</div>
+				<div class="row">
+					<div class="col">
+						<label for="docs">Please provide your feedback</label>
+						<textarea class="feedback" id="agentFeedback"  rows="6" placeholder="Any Feedback !"></textarea><br/>
+						<button type="button" class="btn btn-primary margin-top-bottom-20" id="submitFeedback">Submit</button>
 					</div>
 				</div>
-				<button type="button" class="btn btn-primary" id="uploadDocuments">Upload Documents</button>
-			</form>
+			</div>
 		</div>
-		<div id="snackbar"></div>
-		<div id="spinner"><img src="../img/giphy.gif"></div>
+	</div>
+	<div id="snackbar"></div>
+	<div id="spinner"><img src="../img/giphy.gif"></div>
 	</div>
 	<script src="https://code.jquery.com/jquery-3.3.1.slim.min.js" integrity="sha384-q8i/X+965DzO0rT7abK41JStQIAqVgRVzpbzo5smXKp4YfRvH+8abtTE1Pi6jizo"
 	 crossorigin="anonymous"></script>

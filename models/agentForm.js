@@ -75,10 +75,10 @@ let AgentFormSchema = new mongoose.Schema({
                 required: true,
         },
         profilePic: {
-                type: mongoose.Schema.Types.ObjectId, ref: 'DocsSchema'
+                type: mongoose.Schema.Types.ObjectId, ref: 'docs_schema'
         },
         docs: {
-                type: mongoose.Schema.Types.ObjectId, ref: 'DocsSchema'
+                type: mongoose.Schema.Types.ObjectId, ref: 'docs_schema'
         },
         status: {
                 type: Number,
@@ -100,6 +100,8 @@ let AgentFormSchema = new mongoose.Schema({
         }]
 
 })
+
+AgentFormSchema.add({agent_feedback:String, type: Array})
 
 AgentFormSchema.plugin(uniqueValidator);
 

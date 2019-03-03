@@ -32,6 +32,10 @@ html,body{
 .margin-top-bottom-30{
 	margin: 30px auto;
 }
+
+.margin-top-bottom-20{
+	margin: 20px auto;
+}
 .margin-bottom-20{
 	margin-bottom: 20px;
 }
@@ -61,4 +65,7 @@ html,body{
 	top:50%;
 	left:50%;
 	transform: translate(-50%,-50%);
+ }
+ .oveflowHidden{
+	 overflow: hidden;
  }

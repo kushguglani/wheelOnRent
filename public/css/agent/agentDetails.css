@@ -13,3 +13,8 @@
 .busDefault{
 	display: none
 }
+.feedback{
+	width: 90%;
+	margin: auto;
+	padding: 5px;
+}
